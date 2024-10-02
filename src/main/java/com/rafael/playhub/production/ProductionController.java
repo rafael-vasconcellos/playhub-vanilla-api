@@ -36,5 +36,18 @@ public class ProductionController {
         return ResponseEntity.ok(this.productionRepository.findByNameContaining(query.name()));
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<?> list(@RequestParam TagRequest query) { 
+        List<Production> results = new ArrayList<>();
+        if (query.tags() != null) { results.addAll(this.productionRepository.findByTagsContaining(query.tags())); }
+        if (query.style() != null) { results.addAll(this.productionRepository.findByStyleContaining(query.style())); }
+        if (query.tags() != null && query.style() != null) { 
+            results = results.stream()
+                             .filter( prod -> prod.getTags().contains(query.tags()) && prod.getStyle().contains(query.style()) )
+                             .toList();
+        }
+        return ResponseEntity.ok(results);
+    }
+
     //
 }
