@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rafael.playhub.production.DTO.ProductionSearchQuery;
-import com.rafael.playhub.production.DTO.TagRequest;
-
 
 @RestController
 public class ProductionController { 
@@ -26,24 +23,26 @@ public class ProductionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProduction(@PathVariable UUID id) { 
+        System.out.println(id);
         Optional<Production> optional_prod = this.productionRepository.findById(id);
         if (optional_prod.isPresent()) { return ResponseEntity.ok(optional_prod.get()); }
         return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam ProductionSearchQuery query) { 
-        return ResponseEntity.ok(this.productionRepository.findByNameContaining(query.name()));
+    public ResponseEntity<?> search(@RequestParam String name) { 
+        //System.out.println(name);
+        return ResponseEntity.ok(this.productionRepository.findByNameContaining(name));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> list(@RequestParam TagRequest query) { 
+    public ResponseEntity<?> list(@RequestParam Optional<String> tags, @RequestParam Optional<String> style) { 
         List<Production> results = new ArrayList<>();
-        if (query.tags() != null) { results.addAll(this.productionRepository.findByTagsContaining(query.tags())); }
-        if (query.style() != null) { results.addAll(this.productionRepository.findByStyleContaining(query.style())); }
-        if (query.tags() != null && query.style() != null) { 
+        if (tags.isPresent()) { results.addAll(this.productionRepository.findByTagsContaining(tags.get())); }
+        if (style.isPresent()) { results.addAll(this.productionRepository.findByStyleContaining(style.get())); }
+        if (tags.isPresent() && style.isPresent()) { 
             results = results.stream()
-                             .filter( prod -> prod.getTags().contains(query.tags()) && prod.getStyle().contains(query.style()) )
+                             .filter( prod -> prod.getTags().toLowerCase().contains(tags.get()) && prod.getStyle().toLowerCase().contains(style.get()) )
                              .toList();
         }
         return ResponseEntity.ok(results);
