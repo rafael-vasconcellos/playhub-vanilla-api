@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,8 +19,16 @@ public class ProductionController {
     @Autowired
     private ProductionRepository productionRepository;
 
+
     @GetMapping
     public ResponseEntity<String> hello() { return ResponseEntity.ok("Hello world!"); }
+
+    @GetMapping("/public")
+    public ResponseEntity<?> getPublic() { return ResponseEntity.ok().build(); }
+
+
+    @PostMapping("/create")
+    public ResponseEntity<?> postCreate() { return ResponseEntity.ok().build(); }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProduction(@PathVariable UUID id) { 
