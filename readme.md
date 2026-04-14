@@ -1,7 +1,7 @@
 # About
-the pruporse of this repo is to fiddle with spring security
+The purpose of this repo is to fiddle with Spring Security
 
 ## Goals
 
-protect routes with authentication (token) and csrf  
-encrypt pass
+protect routes with authentication (stateless token) and against CSRF  
+encrypt passwords
